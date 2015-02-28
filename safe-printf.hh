@@ -6,16 +6,17 @@
 
 namespace safe_printf
 {
-  // Naturally you should not refer to this stuff.
+  // Naturally you should not refer to this stuff directly.
   namespace impl
   {
 
     // A constexpr string.
-    struct constExprStr
+    class constExprStr
     {
       unsigned size_;
       const char *str_;
 
+    public:
       template<std::size_t N>
       constexpr constExprStr(const char (&str)[N])
       : size_(N - 1), str_(str)
@@ -28,27 +29,18 @@ namespace safe_printf
       {
       }
 
-      constexpr bool empty() const
-      {
-	return size_ == 0;
-      }
-
-      constexpr char first() const
-      {
-	return str_[0];
-      }
-
-      constexpr constExprStr tail() const
-      {
-	return constExprStr(*this, 1);
-      }
+      constexpr bool empty() const { return size_ == 0; }
+      constexpr char first() const { return str_[0]; }
+      constexpr constExprStr tail() const { return constExprStr(*this, 1); }
     };
 
-    // Helper function to detect if something is string-like.
+    // Helper function to detect if a type is string-like.
     template<typename T>
     constexpr bool isString()
     {
       return std::is_pointer<T>::value
+	// Am I the only one who gets tired of sprinkling typename
+	// everywhere?
 	&& std::is_same<typename std::remove_cv<typename std::remove_pointer<T>::type>::type, char>::value;
     }
 
@@ -100,19 +92,16 @@ namespace safe_printf
 				 : throw std::logic_error("unknown format type"))))))))));
     }
 
-    // Forward declarations.
+    // Some forward declarations.
 
-    // Check that STR does not contain a format directive.
     constexpr bool checkNoFormatPercent(constExprStr str);
+    template<typename Arg> constexpr bool checkFormat(constExprStr str);
 
-    // Base case for format checking.
-    template<typename Arg>
-    constexpr bool checkFormat(constExprStr str);
-
-    // General case for format checking.
     template<typename Arg, typename Arg2, typename... Args>
     constexpr bool checkFormat(constExprStr str);
 
+
+    // Check that STR does not contain a format directive.
     constexpr bool
     checkNoFormat(constExprStr str)
     {
@@ -122,6 +111,8 @@ namespace safe_printf
 	   : checkNoFormat(str.tail()));
     }
 
+    // Check that STR does not contain a format directive, after a "%"
+    // has been seen.
     constexpr bool
     checkNoFormatPercent(constExprStr str)
     {
@@ -131,6 +122,8 @@ namespace safe_printf
 	   : throw std::logic_error("not enough arguments"));
     }
 
+    // Check the character after a "%".  This is the base case for the
+    // recursion.
     template<typename Arg>
     constexpr bool
     checkFormatPercent(constExprStr str)
@@ -142,6 +135,8 @@ namespace safe_printf
 	   : checkNoFormat(str.tail()));
     }
 
+    // Check the character after a "%" and then proceed to check the
+    // remaining arguments.
     template<typename Arg, typename Arg2, typename... Args>
     constexpr bool
     checkFormatPercent(constExprStr str)
@@ -155,6 +150,8 @@ namespace safe_printf
 	      : checkFormat<Arg2, Args...>(str.tail())));
     }
 
+    // Check the first character of STR.  This is the base case of the
+    // recursion.
     template<typename Arg>
     constexpr bool
     checkFormat(constExprStr str)
@@ -165,6 +162,7 @@ namespace safe_printf
 	   : checkFormat<Arg>(str.tail()));
     }
 
+    // Check the first character of STR.
     template<typename Arg, typename Arg2, typename... Args>
     constexpr bool
     checkFormat(constExprStr str)
@@ -190,14 +188,6 @@ namespace safe_printf
     // use decltype on this to get the type of the wrapper for the
     // actual arguments.
     template<typename... T> checkFormatWrapper<T...> getWrapper(T... args);
-
-    // Let's pretend this is the real formatter.
-    // FIXME - must implement.
-    template<typename... T>
-    void doit(const char *fmt, T... args)
-    {
-    }
-
   }
 }
 
@@ -210,7 +200,7 @@ namespace safe_printf
 		  "safe_printf type-check failed");			\
     /* Because __VA_ARGS__ is still broken, we use the GNU pasting	\
        extension here.  */						\
-    doit(format, ## __VA_ARGS__);					\
+    printf (format, ## __VA_ARGS__);					\
   } while (false)
 
 #endif // SAFE_PRINTF_HH
