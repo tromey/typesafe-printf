@@ -131,8 +131,7 @@ namespace safe_printf
       return str.empty()
 	? throw std::logic_error("dangling '%'")
 	: (checkOneFormat<Arg>(str.first())
-	   ? checkOneFormat<Arg>(str.first())
-	   : checkNoFormat(str.tail()));
+	   && checkNoFormat(str.tail()));
     }
 
     // Check the character after a "%" and then proceed to check the
@@ -146,8 +145,7 @@ namespace safe_printf
 	: (str.first() == '%'
 	   ? checkFormat<Arg, Arg2, Args...>(str.tail())
 	   : (checkOneFormat<Arg>(str.first())
-	      ? checkOneFormat<Arg>(str.first())
-	      : checkFormat<Arg2, Args...>(str.tail())));
+	      && checkFormat<Arg2, Args...>(str.tail())));
     }
 
     // Check the first character of STR.  This is the base case of the
