@@ -39,8 +39,8 @@ below for a few specifics.
 This mostly uses `constexpr` but there are also some other fun hacks:
 
 * Check out the way that `checkFormatWrapper` works to extract the
-  variadic parameter pack.  Maybe this is well-known, I don't know,
-  but I thought it was cool.
+  parameter pack.  Maybe this is well-known, I don't know, but I
+  thought it was cool.
 
 * If `template<char... Chars> operator "" _mumble` worked for string
   constants, this could be implemented using templates.  This would be
