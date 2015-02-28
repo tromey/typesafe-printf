@@ -43,9 +43,9 @@ This mostly uses `constexpr` but there are also some other fun hacks:
   thought it was cool.
 
 * If `template<char... Chars> operator "" _mumble` worked for string
-  constants, this could be implemented using templates.  This would be
-  better in many ways, but unfortunately this can't be done yet.
-  Let's hope for C++17.
+  constants, this feature could be implemented using templates.  This
+  would be better in many ways, but unfortunately this can't be done
+  yet.  Let's hope for C++17.
 
 * A macro is needed because I couldn't think of another way to make
   the format be both statically checked and passed to a
