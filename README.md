@@ -2,10 +2,10 @@
 
 This is my attempt at writing a type-safe `printf` for C++.
 
-It is minimal.  It handles formats, like `%s`, and type-checks these.
-However it does not handle all the other features of `printf`, such as
-width and precision.  There is nothing preventing this, I just didn't
-bother yet.
+It is currently minimal.  It handles formats, like `%s`, and
+type-checks these.  However it does not handle all the other features
+of `printf`, such as width and precision.  There is nothing preventing
+this, I just haven't done it yet.
 
 This isn't runtime type-safe.  This is another feature that `printf`
 ought to have, to support localization.  That is, it should statically
