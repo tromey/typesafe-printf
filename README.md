@@ -23,12 +23,12 @@ could be user-extensible as well.
 
 ## See It Work
 
-From this source:
+From this source (see `test.cc`):
 
 ```
 int x;
 ...
-safe_printf("%s -> %d", 23, "hi bob");
+safe_printf("%s -> %d", x, "hi bob");
 ```
 
 We get this from gcc:
