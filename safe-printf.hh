@@ -154,7 +154,7 @@ namespace safe_printf
     constexpr bool
     checkFormat(constExprStr str)
     {
-      return str.empty() ? throw new std::logic_error("too many arguments")
+      return str.empty() ? throw std::logic_error("too many arguments")
 	: (str.first() == '%'
 	   ? checkFormatPercent<Arg>(str.tail())
 	   : checkFormat<Arg>(str.tail()));
@@ -165,7 +165,7 @@ namespace safe_printf
     constexpr bool
     checkFormat(constExprStr str)
     {
-      return str.empty() ? throw new std::logic_error("too many arguments")
+      return str.empty() ? throw std::logic_error("too many arguments")
 	: (str.first() == '%'
 	   ? checkFormatPercent<Arg, Arg2, Args...>(str.tail())
 	   : checkFormat<Arg, Arg2, Args...>(str.tail()));
